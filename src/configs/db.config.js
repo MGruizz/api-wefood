@@ -1,17 +1,16 @@
 const { Client } = require('pg')
 const client = new Client()
-/*
+
 const client = new Client({
-  user: 'dbuser',
-  host: 'database.server.com',
+  user: 'me',
+  host: 'localhost',
   database: 'mydb',
-  password: 'secretpassword',
-  port: 3211,
+  password: '123',
+  port: 5432,
 })
-client.connect()
-ingresar los datos de nuestra data base
+/*ingresar los datos de nuestra data base
 **/
 await client.connect()
-const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+const res = await client.query('SELECT $1::text as message')
 console.log(res.rows[0].message) // Hello world!
 await client.end()
