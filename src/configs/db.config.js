@@ -1,16 +1,11 @@
-const { Client } = require('pg')
-const client = new Client()
+const {Client} = require('pg')
 
 const client = new Client({
-  user: 'me',
-  host: 'localhost',
-  database: 'mydb',
-  password: '123',
+  host: "localhost",
+  user: "postgres",
   port: 5432,
+  password: "123",
+  database: "Respaldo"
 })
-/*ingresar los datos de nuestra data base
-**/
-await client.connect()
-const res = await client.query('SELECT $1::text as message')
-console.log(res.rows[0].message) // Hello world!
-await client.end()
+
+module.exports = client

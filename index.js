@@ -1,6 +1,8 @@
 const Joi = require('joi');
 const express = require('express');
 const app = express();
+const client = require('./src/configs/db.config')
+
 
 app.use(express.json());
 
@@ -82,3 +84,12 @@ app.get('/api/posts/:year/:month',(req,res)=>{
 const port = process.env.PORT || 3000;
 app.listen(port, ()=> console.log(`Listening on port ${port}...`));
 
+
+client.connect();
+client.query('select * from rubros', (err, res) => {
+    if (err) {
+        console.log(err.stack)
+    } else {
+        console.log(res.rows[0])
+    }
+})
