@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const express = require('express');
 const app = express();
-const client = require('./src/configs/db.config')
+const pool = require('./src/configs/db.config')
 
 
 app.use(express.json());
@@ -85,11 +85,14 @@ const port = process.env.PORT || 3000;
 app.listen(port, ()=> console.log(`Listening on port ${port}...`));
 
 
-client.connect();
-client.query('select * from rubros', (err, res) => {
+
+// client.connect();
+pool.query('select * from usuario', (err, res) => {
     if (err) {
         console.log(err.stack)
     } else {
-        console.log(res.rows[0])
+        console.log(res.rows)
     }
+    pool.end();
 })
+//pool.query('Insert into usuario(nombreusuario,contrasena,nombrepersona,descripcionusuario,redessociales,fotoperfil) values(\'Ardnas\',\'12345\',\'Fronten\',\'Chica electronica\',\'Linkdin\',\'fotito\')');
