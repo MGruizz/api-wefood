@@ -96,3 +96,4 @@ pool.query('select * from usuario', (err, res) => {
     pool.end();
 })
 //pool.query('Insert into usuario(nombreusuario,contrasena,nombrepersona,descripcionusuario,redessociales,fotoperfil) values(\'Ardnas\',\'12345\',\'Fronten\',\'Chica electronica\',\'Linkdin\',\'fotito\')');
+
