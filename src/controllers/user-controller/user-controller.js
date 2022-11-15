@@ -15,11 +15,11 @@ const logearUsuario = async (req, res) => {
     console.log(correoElectronico, password);
     const user = await pool.query(
         'SELECT * FROM usuarios where correoelectronico = $1', [correoElectronico],
-        (err, res) => {
+        (err, results) => {
             if (err) {
                 res.status(401).send(console.log(err.stack));
             } else {
-                console.log(res.rows[0])
+                console.log(results.rows[0])
             }
 
             if(results.rows.length > 0) {
@@ -33,6 +33,7 @@ const logearUsuario = async (req, res) => {
                     if(isMatch) {
                         res.status(200).json(user);
                     }
+
                 });
             }
         }
