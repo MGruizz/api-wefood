@@ -16,7 +16,7 @@ app.get('/',(req,res)=>{
     res.send('Hello world');
 });
 
-app.get('/api/courses',(req,res)=>{
+app.get('/courses',(req,res)=>{
     res.send(courses);
 });
 
@@ -87,13 +87,13 @@ app.listen(port, ()=> console.log(`Listening on port ${port}...`));
 
 
 // client.connect();
-pool.query('select * from usuario', (err, res) => {
-    if (err) {
-        console.log(err.stack)
-    } else {
-        console.log(res.rows)
-    }
-    pool.end();
-})
+// pool.query('select * from usuario', (err, res) => {
+//     if (err) {
+//         console.log(err.stack)
+//     } else {
+//         console.log(res.rows)
+//     }
+//     pool.end();
+// })
 //pool.query('Insert into usuario(nombreusuario,contrasena,nombrepersona,descripcionusuario,redessociales,fotoperfil) values(\'Ardnas\',\'12345\',\'Fronten\',\'Chica electronica\',\'Linkdin\',\'fotito\')');
 
