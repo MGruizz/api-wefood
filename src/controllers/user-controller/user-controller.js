@@ -1,4 +1,6 @@
 const pool = require('../../configs/db.config')
+const jwt = require('jsonwebtoken')
+require('dotenv').config();
 
 const bcryptjs = require("bcryptjs");
 
@@ -13,28 +15,31 @@ const getUsersById = async (req,res) => {
 const logearUsuario = async (req, res) => {
     const {correoElectronico, password} = req.body;
     console.log(correoElectronico, password);
-    const user = await pool.query(
+    await pool.query(
         'SELECT * FROM usuarios where correoelectronico = $1', [correoElectronico],
         (err, results) => {
+            
             if (err) {
                 res.status(401).send(console.log(err.stack));
             } else {
-                console.log(results.rows[0])
-            }
-
-            if(results.rows.length > 0) {
-                const user = results.rows[0];
-
-                bcryptjs.compare(password, user.password, (err, isMatch) => {
-                    if(err) {
-                        res.status(401).send(console.log(err.stack));
-                    }
-
-                    if(isMatch) {
-                        res.status(200).json(user);
-                    }
-
-                });
+                
+                if(results.rows.length > 0) {
+                    const user = results.rows[0];
+                    bcryptjs.compare(password, user.password, (err, isMatch) => {
+                        if(err) {
+                            res.status(401).send(console.log(err.stack));
+                        }
+    
+                        if(isMatch) {
+                            const token = jwt.sign(user,process.env.SECRET)
+                            res.status(200).send(token);
+                        }
+    
+                    });
+                }
+                else{
+                    res.status(404).send('El correo no se encuentra registrado');
+                }
             }
         }
     );

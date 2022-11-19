@@ -12,7 +12,7 @@ const {getAllTags} = require('../controllers/tag-controller/tag-controller')
 //Ruta usuario
 router.get('/usuarios/:id/',getUsersById);
 router.post('/login/', logearUsuario);
-router.get('/creacion-usuario/', registrarUsuario)
+router.post('/creacion-usuario/', registrarUsuario)
 //Ruta Receta
 router.get('/recetas/',getAllRecipes);
 router.get('/recetas/:id',getRecipesByUserId)
