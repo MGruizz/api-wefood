@@ -5,34 +5,44 @@ require('dotenv').config();
 const bcryptjs = require("bcryptjs");
 
 
-const getUsersById = async (req,res) => {
+const getUsersById = (req,res,next) => {
     const id = req.params.id;
-    const response = await pool.query(`SELECT * FROM usuarios where idusuario = ${id}`);
-    res.status(200).json(response.rows[0]);
-    pool.end;
+    try{
+        pool
+            .query(`SELECT * FROM usuarios where idusuario = ${id}`)
+            .then(response=> {
+                if(response.rows == 0){
+                    res.status(401).json({Error:'Id no existe'});
+                }
+                else{
+                    res.status(200).json(response.rows[0]);
+                }
+            })
+            .catch(err=> res.status(401).json({Error: err.message}))
+    }catch(e){
+        next(e)
+    }
 }
 
-const logearUsuario = async (req, res) => {
+const logearUsuario =(req, res) => {
     const {correoElectronico, password} = req.body;
     console.log(correoElectronico, password);
-    await pool.query(
-        'SELECT * FROM usuarios where correoelectronico = $1', [correoElectronico],
-        (err, results) => {
-            
-            if (err) {
-                res.status(401).send(console.log(err.stack));
-            } else {
-                
+    try{
+        pool
+            .query('SELECT * FROM usuarios where correoelectronico = $1', [correoElectronico])
+            .then(results => {
                 if(results.rows.length > 0) {
                     const user = results.rows[0];
                     bcryptjs.compare(password, user.password, (err, isMatch) => {
                         if(err) {
                             res.status(401).send(console.log(err.stack));
                         }
-    
                         if(isMatch) {
                             const token = jwt.sign(user,process.env.SECRET)
                             res.status(200).send(token);
+                        }
+                        else{
+                            res.status(401).json({Error:'Password invalida'});
                         }
     
                     });
@@ -40,41 +50,40 @@ const logearUsuario = async (req, res) => {
                 else{
                     res.status(404).send('El correo no se encuentra registrado');
                 }
-            }
-        }
-    );
+            })
+            .catch(err => res.status(401).json({Error: err.message}))
+    }
+    catch(err){
+        next(e);
+    }
 }
 
-const registrarUsuario = async (req, res) => {
+const registrarUsuario = (req, res) => {
     const {nombrepersona, correoelectronico, password} = req.body;
-    let hashPassword = await bcryptjs.hash(password, 10);
-    pool.query(
-        'SELECT * FROM usuarios where correoelectronico = $1', [correoelectronico],
-        (err, results) => {
-            if(err) {
-                res.status(401).send(console.log(err.stack));
-            }
-            console.log(results.rows[0]);
-
-            if(results.rows.length > 0) {
-                res.status(401).send(console.log(err.stack));
-            } else {
-                console.log(nombrepersona, correoelectronico, password, hashPassword, 'holas');
-                pool.query(
-                    `INSERT INTO usuarios (nombrepersona, correoelectronico, password)
-                    VALUES ($1, $2, $3)`, [nombrepersona, correoelectronico, hashPassword],
-                    (err, results) => {
-                        if(err) {
-                            res.status(401).send(console.log(err.stack));
-                        } else {
-                            res.status(200).send(results);
-                        }
-                    }
-                )
-            }
-        }
-    );
+    let hashPassword = bcryptjs.hash(password, 10);
+    try{
+        pool
+            .query('SELECT * FROM usuarios where correoelectronico = $1', [correoelectronico])
+            .then(results =>{
+                if(results.rows.length > 0) {
+                    res.status(401).json({Error: 'El mail ingresado ya se encuentra en uso'});
+                }else {
+                    console.log(nombrepersona, correoelectronico, password, hashPassword, 'holas');
+                    pool
+                        .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password)
+                        VALUES ($1, $2, $3)`, [nombrepersona, correoelectronico, hashPassword],)
+                        .then(results => res.status(200).send(results))
+                        .catch(err => res.status(401).json({Error: err.message}))
+                }
+            })
+            .catch(err => res.status(401).json({Error: err.message}))
+    }
+    catch(e){
+        next(e)
+    }
+    
 }
+
 
 module.exports = {
     getUsersById,

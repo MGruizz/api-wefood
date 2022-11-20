@@ -1,5 +1,7 @@
 const {Router} = require ('express');
+const handleError = require('../middlewares/handleError');
 const router = Router();
+const userExtractor = require('../middlewares/userExtractor')
 
 const {getUsersById} = require('../controllers/user-controller/user-controller')
 const {logearUsuario} = require('../controllers/user-controller/user-controller')
@@ -18,9 +20,17 @@ router.post('/creacion-usuario/', registrarUsuario)
 //Ruta Receta
 router.get('/recetas/',getAllRecipes);
 router.get('/recetas/:id',getRecipesByUserId);
-router.post('/creacion-receta/', crearNuevaReceta)
+router.post('/creacion-receta/',userExtractor ,crearNuevaReceta)
 //Ruta Tag
 router.get('/tags/',getAllTags);
 router.get('/tags/:id',getTagsByRecipeID)
+
+//Not found middleware
+router.use((req,res,next)=>{
+    res.status(404).send({error:'Not found'})
+})
+
+router.use(handleError);
+
 
 module.exports = router;

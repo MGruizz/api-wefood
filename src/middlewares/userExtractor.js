@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {JsonWebTokenError} = require("jsonwebtoken");
+
 module.exports = (req, res, next) => {
     const authorization = req.get('authorization')
     let token = ''
@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     console.log(decodedToken);
 
     if (!token || !decodedToken.id) {
-        return handleErrors.JsonWebTokenError;
+        return res.status(401).json({error:'Token perdido o invalido'});
     }
 
     const { id: userId } = decodedToken;

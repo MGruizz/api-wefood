@@ -6,11 +6,17 @@ const getAllTags = async (req,res) => {
     pool.end;
 }
 
-const getTagsByRecipeID = async (req,res) => {
+const getTagsByRecipeID = (req,res) => {
     const idReceta = req.params.id;
-    const response = await pool.query(`select tags.idtag,tags.nombre from tag_receta ta join tags ON tags.idtag = ta.idtag where ta.idreceta=${idReceta}`);
-    res.status(200).json(response.rows);
-    pool.end;
+    
+    try{
+        pool
+        .query(`select tags.idtag,tags.nombre from tag_receta ta join tags ON tags.idtag = ta.idtag where ta.idreceta=${idReceta}`)
+        .then(response => res.status(200).json(response.rows))
+        .catch(err => res.status(401).json({Error: err.message}))
+    }catch(e){
+        next(e);
+    }
 }
 
 module.exports = {
