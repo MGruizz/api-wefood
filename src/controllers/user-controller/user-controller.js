@@ -24,7 +24,7 @@ const getUsersById = (req,res,next) => {
     }
 }
 
-const logearUsuario =(req, res) => {
+const logearUsuario =(req, res,next) => {
     const {correoElectronico, password} = req.body;
     console.log(correoElectronico, password);
     try{
@@ -58,7 +58,7 @@ const logearUsuario =(req, res) => {
     }
 }
 
-const registrarUsuario = (req, res) => {
+const registrarUsuario = (req, res,next) => {
     const {nombrepersona, correoelectronico, password} = req.body;
     let hashPassword = bcryptjs.hash(password, 10);
     try{
@@ -71,7 +71,7 @@ const registrarUsuario = (req, res) => {
                     console.log(nombrepersona, correoelectronico, password, hashPassword, 'holas');
                     pool
                         .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password)
-                        VALUES ($1, $2, $3)`, [nombrepersona, correoelectronico, hashPassword],)
+                        VALUES ($1, $2, $3)`, [nombrepersona, correoelectronico, hashPassword])
                         .then(results => res.status(200).send(results))
                         .catch(err => res.status(401).json({Error: err.message}))
                 }

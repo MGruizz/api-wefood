@@ -20,7 +20,7 @@ router.post('/creacion-usuario/', registrarUsuario)
 //Ruta Receta
 router.get('/recetas/',getAllRecipes);
 router.get('/recetas/:id',getRecipesByUserId);
-router.post('/creacion-receta/',userExtractor ,crearNuevaReceta)
+router.post('/recetas/',userExtractor ,crearNuevaReceta)
 //Ruta Tag
 router.get('/tags/',getAllTags);
 router.get('/tags/:id',getTagsByRecipeID)

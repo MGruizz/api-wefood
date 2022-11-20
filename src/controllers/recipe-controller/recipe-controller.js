@@ -1,5 +1,4 @@
 const pool = require('../../configs/db.config')
-const jwt = require('jsonwebtoken');
 
 const getAllRecipes = async (req,res) => {
     const response = await pool.query(`SELECT * FROM recetas`);
@@ -16,7 +15,31 @@ const getRecipesByUserId =(req,res,next) => {
         .catch(err => next(err))   
 }
 
-const crearNuevaReceta = async (req,res) => {
+const crearNuevaReceta = (req,res,next) => {
+    const {
+        nombrereceta,
+        descripcionreceta,
+        ingredientes,
+        pasosrecetas,
+    } = req.body
+    const authorization = req.get('authorization')
+    if(authorization && authorization.toLowerCase().startsWith('bearer')){
+        const {idusuario} = req;
+        try{
+            pool
+                .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta)VALUES ($1, $2, $3, $4, $5)`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas])
+                .then(results => res.status(201).send('Insersion exitosa'))
+                .catch(err => {
+                    next(err)
+                })
+        }catch(err){
+            next(err);
+        }
+    }
+    else{
+        res.status(400).send(console.log('Sin autorizacion'));
+    }
+
     
 }
 
