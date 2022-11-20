@@ -24,22 +24,22 @@ const getUsersById = (req,res,next) => {
     }
 }
 
-const logearUsuario =(req, res,next) => {
+const logearUsuario = async (req, res,next) => {
     const {correoElectronico, password} = req.body;
     console.log(correoElectronico, password);
     try{
-        pool
+        await pool
             .query('SELECT * FROM usuarios where correoelectronico = $1', [correoElectronico])
             .then(results => {
                 if(results.rows.length > 0) {
                     const user = results.rows[0];
-                    bcryptjs.compare(password, user.password, (err, isMatch) => {
+                     bcryptjs.compare(password, user.password, (err, isMatch) => {
                         if(err) {
                             res.status(401).send(console.log(err.stack));
                         }
                         if(isMatch) {
                             const token = jwt.sign(user,process.env.SECRET)
-                            res.status(200).send(token);
+                            res.status(200).send({id:user.idusuario,token});
                         }
                         else{
                             res.status(401).json({Error:'Password invalida'});
@@ -58,9 +58,9 @@ const logearUsuario =(req, res,next) => {
     }
 }
 
-const registrarUsuario = (req, res,next) => {
+const registrarUsuario = async (req, res,next) => {
     const {nombrepersona, correoelectronico, password} = req.body;
-    let hashPassword = bcryptjs.hash(password, 10);
+    let hashPassword = await bcryptjs.hash(password, 10);
     try{
         pool
             .query('SELECT * FROM usuarios where correoelectronico = $1', [correoelectronico])
