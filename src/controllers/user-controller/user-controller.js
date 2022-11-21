@@ -39,7 +39,7 @@ const logearUsuario = async (req, res,next) => {
                         }
                         if(isMatch) {
                             const token = jwt.sign(user,process.env.SECRET)
-                            res.status(200).send({id:user.idusuario,token});
+                            res.status(200).send({user,token});
                         }
                         else{
                             res.status(401).json({Error:'Password invalida'});
