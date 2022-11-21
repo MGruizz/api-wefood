@@ -60,6 +60,7 @@ const logearUsuario = async (req, res,next) => {
 
 const registrarUsuario = async (req, res,next) => {
     const {nombrepersona, correoelectronico, password} = req.body;
+    console.log({nombrepersona, correoelectronico, password})
     let hashPassword = await bcryptjs.hash(password, 10);
     try{
         pool
@@ -72,7 +73,7 @@ const registrarUsuario = async (req, res,next) => {
                     pool
                         .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password)
                         VALUES ($1, $2, $3)`, [nombrepersona, correoelectronico, hashPassword])
-                        .then(results => res.status(200).send(results))
+                        .then(results => res.status(200).send({results}))
                         .catch(err => res.status(401).json({Error: err.message}))
                 }
             })
