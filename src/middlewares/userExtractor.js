@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
         return res.status(401).json({error:'Token perdido o invalido'});
     }
     const { idusuario } = decodedToken;
-    console.log(idusuario)
     req.idusuario = idusuario;
     next();
 }

@@ -21,14 +21,29 @@ const crearNuevaReceta = (req,res,next) => {
         descripcionreceta,
         ingredientes,
         pasosrecetas,
+        tags
     } = req.body
+    let idReceta = 0;
     const authorization = req.get('authorization')
     if(authorization && authorization.toLowerCase().startsWith('bearer')){
         const {idusuario} = req;
         try{
             pool
-                .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta)VALUES ($1, $2, $3, $4, $5)`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas])
-                .then(results => res.status(201).send('Insersion exitosa'))
+                .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta)VALUES ($1, $2, $3, $4, $5) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas])
+                .then(results => {
+                    idReceta = results.rows[0].idreceta;
+                    for(let i in tags){        
+                        pool
+                            .query(`INSERT INTO tag_receta (idreceta,idtag)VALUES ($1, $2)`,[idReceta,tags[i]])
+                            .then(results => {
+                                console.log(`tag ${i}: ${tags[i]} insertado a la receta`);
+                            })
+                            .catch(err => {
+                                console.log(err.message)
+                            })
+                    }
+                    res.status(201).send('Insersion exitosa');
+                })
                 .catch(err => {
                     next(err)
                 })
