@@ -44,7 +44,6 @@ const logearUsuario = async (req, res,next) => {
                         else{
                             res.status(401).json({Error:'Password invalida'});
                         }
-    
                     });
                 }
                 else{
@@ -69,7 +68,6 @@ const registrarUsuario = async (req, res,next) => {
                 if(results.rows.length > 0) {
                     res.status(401).json({Error: 'El mail ingresado ya se encuentra en uso'});
                 }else {
-                    console.log(nombrepersona, correoelectronico, password, hashPassword, 'holas');
                     pool
                         .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password)
                         VALUES ($1, $2, $3)`, [nombrepersona, correoelectronico, hashPassword])

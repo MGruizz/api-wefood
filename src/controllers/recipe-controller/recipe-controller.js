@@ -24,6 +24,7 @@ const crearNuevaReceta = (req,res,next) => {
         tags
     } = req.body
     let idReceta = 0;
+    console.log(req.get('authorization'));
     const authorization = req.get('authorization')
     if(authorization && authorization.toLowerCase().startsWith('bearer')){
         const {idusuario} = req;
@@ -42,7 +43,7 @@ const crearNuevaReceta = (req,res,next) => {
                                 console.log(err.message)
                             })
                     }
-                    res.status(201).send('Insersion exitosa');
+                    res.status(201).send([{res:'Insersion exitosa'}]);
                 })
                 .catch(err => {
                     next(err)
@@ -54,12 +55,58 @@ const crearNuevaReceta = (req,res,next) => {
     else{
         res.status(400).send(console.log('Sin autorizacion'));
     }
+}
 
-    
+const eliminarReceta = (req,res) => {
+    const {idreceta} = req.body;
+    try{
+        pool
+            .query('DELETE FROM recetas WHERE idreceta = $1 RETURNING nombrereceta',[idreceta])
+            .then(response => {
+                console.log(response.rows)
+                if(response.rows > 0){
+                    res.status(200).json({res: 'Receta eliminada exitosamente'});
+                }
+                else{
+                    res.status(401).json({res:'No se encuentra la receta'})
+                }
+            })
+            .catch(err => res.status(401).json({Error:err.message}))
+    }catch(e){
+        next(e);
+    }
+}
+
+const editarReceta = (req,res) => {
+    const {ididreceta,nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagenes} = req.params.body;
+    try{
+        pool
+            .query('SELECT * FROM recetas WHERE idreceta = $1',[idreceta])
+            .then(response => {
+                if(response.rows > 0){
+                    pool
+                        .query(`UPDATE recetas SET nombrereceta = $1,descripcionreceta = $2,ingredientes = $3,pasosrecetas = $4,imagenes = $5,
+                                 where idtag = $6`,[nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagenes,ididreceta])
+                        .then(response => {
+                            res.status(401).json({Res:'Tag actualizado exitosamente',Receta:response.rows[0]})
+                        })
+                        .catch(err => res.status(401).json({Error:err.message}))
+                    
+                }
+                else{
+                    res.status(401).json({Error: 'La receta buscada no existe'});
+                }
+            })
+            .catch(err => res.status(401).json({Error:err.message}))
+    }catch(e){
+        next(e);
+    }
 }
 
 module.exports = {
     getAllRecipes,
     getRecipesByUserId,
-    crearNuevaReceta
+    crearNuevaReceta,
+    eliminarReceta,
+    editarReceta
 }
