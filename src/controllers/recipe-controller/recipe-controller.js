@@ -15,7 +15,7 @@ const getRecipesByUserId =(req,res,next) => {
         .catch(err => next(err))   
 }
 
-const crearNuevaReceta = (req,res,next) => {
+const crearNuevaReceta = async (req,res,next) => {
     const {
         nombrereceta,
         descripcionreceta,
@@ -24,37 +24,31 @@ const crearNuevaReceta = (req,res,next) => {
         tags
     } = req.body
     let idReceta = 0;
-    console.log(req.get('authorization'));
-    const authorization = req.get('authorization')
-    if(authorization && authorization.toLowerCase().startsWith('bearer')){
-        const {idusuario} = req;
-        try{
-            pool
-                .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta)VALUES ($1, $2, $3, $4, $5) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas])
-                .then(results => {
-                    idReceta = results.rows[0].idreceta;
-                    for(let i in tags){        
-                        pool
-                            .query(`INSERT INTO tag_receta (idreceta,idtag)VALUES ($1, $2)`,[idReceta,tags[i]])
-                            .then(results => {
-                                console.log(`tag ${i}: ${tags[i]} insertado a la receta`);
-                            })
-                            .catch(err => {
-                                console.log(err.message)
-                            })
-                    }
-                    res.status(201).send([{res:'Insersion exitosa'}]);
-                })
-                .catch(err => {
-                    next(err)
-                })
-        }catch(err){
-            next(err);
+    const {idusuario} = req;
+    try{
+        await pool
+            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta)VALUES ($1, $2, $3, $4, $5) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas])
+            .then(results => {
+                idReceta = results.rows[0].idreceta;
+                for(let i in tags){    
+                    pool
+                        .query(`INSERT INTO tag_receta (idreceta,idtag)VALUES ($1, $2)`,[idReceta,tags[i]])
+                        .then(results => {
+                            console.log(`tag ${i}: ${tags[i]} insertado a la receta`);
+                        })
+                        .catch(err => {
+                            console.log(err.message)
+                        })
+                }
+                res.status(201).json({hola:'Insersion exitosa'});
+            })
+            .catch(err => {
+                next(err)
+            })
+    }catch(err){
+        next(err);
         }
-    }
-    else{
-        res.status(400).send(console.log('Sin autorizacion'));
-    }
+    
 }
 
 const eliminarReceta = (req,res) => {
