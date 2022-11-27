@@ -1,9 +1,20 @@
 const pool = require('../../configs/db.config')
 
-const getAllRecipes = async (req,res) => {
-    const response = await pool.query(`SELECT * FROM recetas`);
-    res.status(200).json(response.rows);
-    pool.end;
+const getAllRecipes = async (req,res,next) => {
+    let autores = [];
+    try{
+        await pool
+        .query(`SELECT recetas.idautor,recetas.idreceta,recetas.nombrereceta,recetas.descripcionreceta,recetas.ingredientes,recetas.pasosreceta,recetas.imagenes,usuarios.nombrepersona
+             FROM recetas join usuarios on idautor = idusuario`)
+        .then(response => {
+            res.status(200).json(response.rows)
+        })
+        .catch(err => console.log(err.message))
+    }
+    catch(e){
+        next(e);
+    }
+    
 }
 
 const getRecipesByUserId =(req,res,next) => {
@@ -40,14 +51,14 @@ const crearNuevaReceta = async (req,res,next) => {
                             console.log(err.message)
                         })
                 }
-                res.status(201).json({hola:'Insersion exitosa'});
+                res.status(201).json({res:'Insersion exitosa'});
             })
             .catch(err => {
                 next(err)
             })
     }catch(err){
         next(err);
-        }
+    }
     
 }
 

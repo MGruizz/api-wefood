@@ -12,11 +12,11 @@ const getTagsByRecipeID = (req,res) => {
         pool
         .query(`select tags.idtag,tags.nombre from tag_receta ta join tags ON tags.idtag = ta.idtag where ta.idreceta=$1`,[idReceta])
         .then(response => {
-            if(response.rows > 0){
+            if(response.rows.length > 0){
                 res.status(200).json({res:response.rows})
             }
             else{
-                res.status(200).json([]);
+                res.status(200).json({res:[]});
             }
         })
         .catch(err => res.status(401).json({Error: err.message}))
