@@ -19,12 +19,12 @@ La rama master cuenta con la ultima version del proyecto.
 
 ## Detalles del código
 Antes de ejecutar proyecto, escribir comando npm install para instalar todas las dependencias ubicadas en package.json
-
+<br>
 Para que el back escuche, se debe ejecutar comando node app.js
-
+<br>
 El backend contiene un manejador de errores, tiene implementacion de jsonwebtoken y se encriptan las passwords.
 Se tiene programado el CRUD para las recetas y los tags.
-
+<br>
 Se debe tener conectado a base de datos para hacer uso correcto, las credenciales se pueden modificar en la carpeta .env donde se encuentran las variables de entorno
 
 <p align="right">(<a href="#top">back to top</a>)</p>
