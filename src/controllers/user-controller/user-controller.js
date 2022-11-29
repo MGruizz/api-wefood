@@ -11,7 +11,7 @@ const getUsersById = (req,res,next) => {
         pool
             .query(`SELECT * FROM usuarios where idusuario = ${id}`)
             .then(response=> {
-                if(response.rows == 0){
+                if(response.rows.length == 0){
                     res.status(401).json({Error:'Id no existe'});
                 }
                 else{

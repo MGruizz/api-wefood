@@ -70,7 +70,7 @@ const eliminarReceta = (req,res) => {
             .query('DELETE FROM recetas WHERE idreceta = $1 RETURNING nombrereceta',[idreceta])
             .then(response => {
                 console.log(response.rows)
-                if(response.rows > 0){
+                if(response.rows.length > 0){
                     res.status(200).json({res: 'Receta eliminada exitosamente'});
                 }
                 else{
@@ -89,7 +89,7 @@ const editarReceta = (req,res) => {
         pool
             .query('SELECT * FROM recetas WHERE idreceta = $1',[idreceta])
             .then(response => {
-                if(response.rows > 0){
+                if(response.rows.length > 0){
                     pool
                         .query(`UPDATE recetas SET nombrereceta = $1,descripcionreceta = $2,ingredientes = $3,pasosrecetas = $4,imagenes = $5,
                                  where idtag = $6`,[nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagenes,ididreceta])

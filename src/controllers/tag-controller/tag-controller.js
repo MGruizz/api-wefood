@@ -25,25 +25,27 @@ const getTagsByRecipeID = (req,res) => {
     }
 }
 
-const agregarTag = (req,res) => {
-    const tag = (req.params.nombre).charAt(0).toUpperCase() + ((req.params.nombre).slice(1));
+const agregarTag = async (req,res) => {
+    let tag = req.body.nombre.toLowerCase();
+    tag = (tag).charAt(0).toUpperCase() + ((tag).slice(1));
+    console.log(tag);
     try{
-        pool
+        await pool
             .query('SELECT nombre FROM tags WHERE nombre = $1',[tag])
             .then(response => {
-                if(response.rows > 0){
-                res.status(401).json({Error: 'El tag ingresado ya se encuentra ingresado'});
+                if(response.rows.length > 0){
+                res.status(400).json({Error: 'El tag ingresado ya se encuentra ingresado'});
                 }
                 else{
                     pool
                         .query('INSERT INTO tags (nombre) VALUES ($1)',[tag])
                         .then(response => {
-                            res.status(401).json({Res:'Tag ingresado exitosamente'})
+                            res.status(201).json({Res:'Tag ingresado exitosamente'})
                         })
                         .catch(err => res.status(401).json({Error:err.message}))
                 }
             })
-            .catch(err => res.status(401).json({Error:err.message}))
+            .catch(err => res.status(400).json({Error:err.message}))
     }catch(e){
         next(e);
     }
@@ -57,7 +59,7 @@ const eliminarTag = (req,res) => {
             .query('DELETE FROM tags WHERE idtag = $1 RETURNING nombre',[id])
             .then(response => {
                 console.log(response.rows)
-                if(response.rows > 0){
+                if(response.rows.length > 0){
                     res.status(200).json({res: 'Tag eliminado exitosamente'});
                 }
                 else{
@@ -77,9 +79,9 @@ const editarTag = (req,res) => {
         pool
             .query('SELECT * FROM tags WHERE idtag = $1',[id])
             .then(response => {
-                if(response.rows > 0){
+                if(response.rows.length > 0){
                     pool
-                        .query('UPDATE TAGS set nombre = $1 where idtag = $2',[nombre,id])
+                        .query('UPDATE TAGS set nombre = $1 where idtag = $2 RETURNING *',[nombre,id])
                         .then(response => {
                             res.status(401).json({Res:'Tag actualizado exitosamente',Tag:response.rows[0]})
                         })
