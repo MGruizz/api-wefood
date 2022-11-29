@@ -18,6 +18,8 @@ Cuenta con opciones de creación de cuenta, inicio de sesión, acceso a perfil d
 La rama master cuenta con la ultima version del proyecto.
 
 ## Detalles del código
+Antes de ejecutar proyecto, escribir comando npm install para instalar todas las dependencias ubicadas en package.json
+
 El backend contiene un manejador de errores, tiene implementacion de jsonwebtoken y se encriptan las passwords.
 Se tiene programado el CRUD para las recetas y los tags.
 
