@@ -72,7 +72,7 @@ const registrarUsuario = async (req, res,next) => {
                 }else {
                     pool
                         .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password,fotoperfil,isadmin)
-                        VALUES ($1, $2, $3,$4)`, [nombrepersona, correoelectronico, hashPassword,imagen,admin])
+                        VALUES ($1, $2, $3,$4,$5)`, [nombrepersona, correoelectronico, hashPassword,imagen,admin])
                         .then(results => res.status(200).send({results}))
                         .catch(err => res.status(401).json({Error: err.message}))
                 }
