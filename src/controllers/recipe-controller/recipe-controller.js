@@ -39,7 +39,7 @@ const crearNuevaReceta = async (req,res,next) => {
     const {idusuario} = req;
     try{
         await pool
-            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta,imagenes)VALUES ($1, $2, $3, $4, $5,$6) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagen])
+            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta,imagenes)VALUES ($1, $2, $3, $4, $5,$6) RETURNING idreceta`,[idusuario,to.upperCase(nombrereceta),descripcionreceta,ingredientes,pasosrecetas,imagen])
             .then(results => {
                 idReceta = results.rows[0].idreceta;
                 for(let i in tags){    
@@ -109,10 +109,31 @@ const editarReceta = (req,res) => {
     }
 }
 
+const buscarReceta = async (req,res) => {
+    const {buscado} = req.body;
+    try{
+        await pool 
+            .query(`SELECT nombrereceta, descripcionreceta, ingredientes FROM recetas where nombrereceta ilike $1 or descripcionreceta ilike $1 or ingredientes ilike $1`,['%' + buscado + '%'])
+            .then(response => {
+                console.log(response)
+                if(response.rows.length > 0){
+                    res.status(200).json({res:response.rows})
+                }
+                else{
+                    res.status(400).json({Error: 'No se encuentra informacion'})
+                }
+            })
+            .catch(err => res.status(400).json({Err:err.message}))
+    }catch(e){
+        next(e);
+    }
+}
+
 module.exports = {
     getAllRecipes,
     getRecipesByUserId,
     crearNuevaReceta,
     eliminarReceta,
-    editarReceta
+    editarReceta,
+    buscarReceta
 }

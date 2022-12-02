@@ -4,7 +4,7 @@ const router = Router();
 const userExtractor = require('../middlewares/userExtractor')
 
 const {getUsersById,logearUsuario,registrarUsuario} = require('../controllers/user-controller/user-controller')
-const {getAllRecipes,getRecipesByUserId,crearNuevaReceta,eliminarReceta,editarReceta} = require('../controllers/recipe-controller/recipe-controller')
+const {getAllRecipes,getRecipesByUserId,crearNuevaReceta,eliminarReceta,editarReceta,buscarReceta} = require('../controllers/recipe-controller/recipe-controller')
 const {getTagsByRecipeID,getAllTags,agregarTag,eliminarTag,editarTag} = require('../controllers/tag-controller/tag-controller')
 
 
@@ -18,6 +18,7 @@ router.get('/recetas/:id',getRecipesByUserId);
 router.post('/recetas/',userExtractor ,crearNuevaReceta)
 router.delete('/recetas/',userExtractor ,eliminarReceta)
 router.put('/recetas/',userExtractor ,editarReceta)
+router.get('/buscarRecetas/',buscarReceta)
 //Ruta Tag
 router.get('/tags/',getAllTags);
 router.get('/tags/:id',getTagsByRecipeID);
