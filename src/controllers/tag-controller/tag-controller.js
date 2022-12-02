@@ -83,7 +83,7 @@ const editarTag = (req,res) => {
                     pool
                         .query('UPDATE TAGS set nombre = $1 where idtag = $2 RETURNING *',[nombre,id])
                         .then(response => {
-                            res.status(401).json({Res:'Tag actualizado exitosamente',Tag:response.rows[0]})
+                            res.status(200).json({Res:'Tag actualizado exitosamente',Tag:response.rows[0]})
                         })
                         .catch(err => res.status(401).json({Error:err.message}))
                     
