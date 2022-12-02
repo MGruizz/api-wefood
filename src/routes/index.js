@@ -18,7 +18,7 @@ router.get('/recetas/:id',getRecipesByUserId);
 router.post('/recetas/',userExtractor ,crearNuevaReceta)
 router.delete('/recetas/',userExtractor ,eliminarReceta)
 router.put('/recetas/',userExtractor ,editarReceta)
-router.get('/buscarRecetas/',buscarReceta)
+router.get('/buscarRecetas/:palabraclave',buscarReceta)
 //Ruta Tag
 router.get('/tags/',getAllTags);
 router.get('/tags/:id',getTagsByRecipeID);
