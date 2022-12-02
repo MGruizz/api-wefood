@@ -62,6 +62,7 @@ const registrarUsuario = async (req, res,next) => {
     const imagen = 'https://i1.sndcdn.com/avatars-000416471418-8ll5py-t240x240.jpg';
     console.log({nombrepersona, correoelectronico, password})
     let hashPassword = await bcryptjs.hash(password, 10);
+    const admin = FALSE;
     try{
         await pool
             .query('SELECT * FROM usuarios where correoelectronico = $1', [correoelectronico])
@@ -70,8 +71,8 @@ const registrarUsuario = async (req, res,next) => {
                     res.status(401).json({Error: 'El mail ingresado ya se encuentra en uso'});
                 }else {
                     pool
-                        .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password,fotoperfil)
-                        VALUES ($1, $2, $3,$4)`, [nombrepersona, correoelectronico, hashPassword,imagen])
+                        .query(`INSERT INTO usuarios (nombrepersona, correoelectronico, password,fotoperfil,isadmin)
+                        VALUES ($1, $2, $3,$4)`, [nombrepersona, correoelectronico, hashPassword,imagen,admin])
                         .then(results => res.status(200).send({results}))
                         .catch(err => res.status(401).json({Error: err.message}))
                 }
