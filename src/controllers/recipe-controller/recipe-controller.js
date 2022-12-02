@@ -110,10 +110,10 @@ const editarReceta = (req,res) => {
 }
 
 const buscarReceta = async (req,res) => {
-    const {buscado} = req.body;
+    const {palabraclave} = req.params;
     try{
         await pool 
-            .query(`SELECT nombrereceta, descripcionreceta, ingredientes FROM recetas where nombrereceta ilike $1 or descripcionreceta ilike $1 or ingredientes ilike $1`,['%' + buscado + '%'])
+            .query(`SELECT nombrereceta, descripcionreceta, ingredientes FROM recetas where nombrereceta ilike $1 or descripcionreceta ilike $1 or ingredientes ilike $1`,['%' + palabraclave + '%'])
             .then(response => {
                 console.log(response)
                 if(response.rows.length > 0){
