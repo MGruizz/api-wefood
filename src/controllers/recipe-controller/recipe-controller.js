@@ -117,7 +117,7 @@ const buscarReceta = async (req,res) => {
             .then(response => {
                 console.log(response)
                 if(response.rows.length > 0){
-                    res.status(200).json({res:response.rows})
+                    res.status(200).json(response.rows)
                 }
                 else{
                     res.status(400).json({Error: 'No se encuentra informacion'})
