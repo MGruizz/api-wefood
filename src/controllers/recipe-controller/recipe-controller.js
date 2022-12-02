@@ -39,7 +39,7 @@ const crearNuevaReceta = async (req,res,next) => {
     const {idusuario} = req;
     try{
         await pool
-            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta,imagenes)VALUES ($1, $2, $3, $4, $5,$6) RETURNING idreceta`,[idusuario,to.upperCase(nombrereceta),descripcionreceta,ingredientes,pasosrecetas,imagen])
+            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta,imagenes)VALUES ($1, $2, $3, $4, $5,$6) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagen])
             .then(results => {
                 idReceta = results.rows[0].idreceta;
                 for(let i in tags){    

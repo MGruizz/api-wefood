@@ -74,7 +74,9 @@ const eliminarTag = (req,res) => {
 
 // Mismo problema que eliminar
 const editarTag = (req,res) => {
-    const {id,nombre} = req.params.body;
+    const {id,nombre} = req.body;
+    nombre=nombre.toLowerCase();
+    nombre= (nombre).charAt(0).toUpperCase() + ((nombre).slice(1));
     try{
         pool
             .query('SELECT * FROM tags WHERE idtag = $1',[id])
