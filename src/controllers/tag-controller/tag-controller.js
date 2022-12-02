@@ -26,6 +26,7 @@ const getTagsByRecipeID = (req,res) => {
 }
 
 const agregarTag = async (req,res) => {
+    
     let tag = req.body.nombre.toLowerCase();
     tag = (tag).charAt(0).toUpperCase() + ((tag).slice(1));
     console.log(tag);
@@ -53,10 +54,11 @@ const agregarTag = async (req,res) => {
 
 // Problema al eliminar con clave foranea en tabla NUB
 const eliminarTag = (req,res) => {
-    const {id} = req.body;
+    const idTag= req.params.id;
+    console.log(idTag)
     try{
         pool
-            .query('DELETE FROM tags WHERE idtag = $1 RETURNING nombre',[id])
+            .query('DELETE FROM tags WHERE idtag = $1 RETURNING nombre',[idTag])
             .then(response => {
                 console.log(response.rows)
                 if(response.rows.length > 0){
@@ -74,6 +76,7 @@ const eliminarTag = (req,res) => {
 
 // Mismo problema que eliminar
 const editarTag = (req,res) => {
+
     const {id,nombre} = req.body;
     nombre=nombre.toLowerCase();
     nombre= (nombre).charAt(0).toUpperCase() + ((nombre).slice(1));

@@ -24,7 +24,7 @@ router.get('/buscarRecetas/:palabraclave',buscarReceta)
 router.get('/tags/',getAllTags);
 router.get('/tags/:id',getTagsByRecipeID);
 router.post('/tags/',userExtractor,agregarTag);
-router.delete('/tags/',userExtractor,eliminarTag);
+router.delete('/tags/:id',userExtractor,eliminarTag);
 router.put('/tags/',userExtractor,editarTag);
 
 //Not found middleware
