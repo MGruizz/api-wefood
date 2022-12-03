@@ -2,12 +2,17 @@ const Joi = require('joi');
 const express = require('express');
 var cors = require('cors');
 const app = express();
-
-require('dotenv').config();
-
+const multer = require('multer');
+const upload = multer();
+app.use(upload.array()); 
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+
+app.use(express.static('public'));
+require('dotenv').config();
+
 
 // routes
 app.use(require('./src/routes/index'));
