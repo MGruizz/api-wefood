@@ -64,10 +64,10 @@ const crearNuevaReceta = async (req,res,next) => {
 }
 
 const eliminarReceta = (req,res) => {
-    const {idreceta} = req.body;
+    const {id} = req.params;
     try{
         pool
-            .query('DELETE FROM recetas WHERE idreceta = $1 RETURNING nombrereceta',[idreceta])
+            .query('DELETE FROM recetas WHERE idreceta = $1 RETURNING nombrereceta',[id])
             .then(response => {
                 console.log(response.rows)
                 if(response.rows.length > 0){
@@ -84,17 +84,41 @@ const eliminarReceta = (req,res) => {
 }
 
 const editarReceta = (req,res) => {
-    const {ididreceta,nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagenes} = req.params.body;
+    const {idReceta,nombreReceta,descripcionReceta,ingredientes,pasosReceta,tags} = req.body;
+    let imagen = 'https://media.discordapp.net/attachments/1013532354725281872/1020105421404508190/WeFood_Mascot_Sad.png?width=985&height=554';
     try{
         pool
-            .query('SELECT * FROM recetas WHERE idreceta = $1',[idreceta])
+            .query('SELECT * FROM recetas WHERE idreceta = $1',[idReceta])
             .then(response => {
                 if(response.rows.length > 0){
                     pool
-                        .query(`UPDATE recetas SET nombrereceta = $1,descripcionreceta = $2,ingredientes = $3,pasosrecetas = $4,imagenes = $5,
-                                 where idtag = $6`,[nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagenes,ididreceta])
+                        .query(`UPDATE recetas SET nombrereceta = $1,descripcionreceta = $2,ingredientes = $3,pasosreceta = $4,imagenes = $5
+                                WHERE idreceta = $6`,[nombreReceta,descripcionReceta,ingredientes,pasosReceta,imagen,idReceta])
                         .then(response => {
-                            res.status(401).json({Res:'Tag actualizado exitosamente',Receta:response.rows[0]})
+
+
+                            pool
+                                .query(`DELETE FROM tag_receta WHERE idreceta = $1`,[idReceta])
+                                .then(results => {
+                                    for(let i in tags){
+                                        pool
+                                            .query(`
+                                            INSERT INTO tag_receta(idreceta,idtag) VALUES($1,$2)`,[idReceta, tags[i].idTag])
+                                            .then(results => {
+                                                console.log(`tag ${i}: ${tags[i]} insertado a la receta`);
+                                            })
+                                            .catch(err => {
+                                                console.log(err.message)
+                                            })
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err.message)
+                                })
+
+
+
+                            res.status(200).json({Res:'Receta actualizado exitosamente',Receta:response.rows[0]})
                         })
                         .catch(err => res.status(401).json({Error:err.message}))
                     

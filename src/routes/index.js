@@ -17,8 +17,8 @@ router.put('/editusuario/',userExtractor,editarPerfil)
 router.get('/recetas/',getAllRecipes);
 router.get('/recetas/:id',getRecipesByUserId);
 router.post('/recetas/',userExtractor ,crearNuevaReceta)
-router.delete('/recetas/',userExtractor ,eliminarReceta)
-router.put('/recetas/',userExtractor ,editarReceta)
+router.delete('/eliminarreceta/:id',userExtractor ,eliminarReceta)
+router.put('/editreceta/',userExtractor ,editarReceta)
 router.get('/buscarRecetas/:palabraclave',buscarReceta)
 //Ruta Tag
 router.get('/tags/',getAllTags);
