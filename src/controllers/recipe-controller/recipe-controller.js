@@ -32,14 +32,14 @@ const crearNuevaReceta = async (req,res,next) => {
         descripcionreceta,
         ingredientes,
         pasosrecetas,
+        imagenes,
         tags
     } = req.body
-    let imagen = 'https://media.discordapp.net/attachments/1013532354725281872/1020105421404508190/WeFood_Mascot_Sad.png?width=985&height=554'
     let idReceta = 0;
     const {idusuario} = req;
     try{
         await pool
-            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta,imagenes)VALUES ($1, $2, $3, $4, $5,$6) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagen])
+            .query(`INSERT INTO recetas (idautor, nombrereceta, descripcionreceta, ingredientes,pasosreceta,imagenes)VALUES ($1, $2, $3, $4, $5,$6) RETURNING idreceta`,[idusuario,nombrereceta,descripcionreceta,ingredientes,pasosrecetas,imagenes])
             .then(results => {
                 idReceta = results.rows[0].idreceta;
                 for(let i in tags){    
@@ -84,8 +84,7 @@ const eliminarReceta = (req,res) => {
 }
 
 const editarReceta = (req,res) => {
-    const {idReceta,nombreReceta,descripcionReceta,ingredientes,pasosReceta,tags} = req.body;
-    let imagen = 'https://media.discordapp.net/attachments/1013532354725281872/1020105421404508190/WeFood_Mascot_Sad.png?width=985&height=554';
+    const {idReceta,nombreReceta,descripcionReceta,ingredientes,pasosReceta,tags,imagenes} = req.body;
     try{
         pool
             .query('SELECT * FROM recetas WHERE idreceta = $1',[idReceta])
@@ -93,7 +92,7 @@ const editarReceta = (req,res) => {
                 if(response.rows.length > 0){
                     pool
                         .query(`UPDATE recetas SET nombrereceta = $1,descripcionreceta = $2,ingredientes = $3,pasosreceta = $4,imagenes = $5
-                                WHERE idreceta = $6`,[nombreReceta,descripcionReceta,ingredientes,pasosReceta,imagen,idReceta])
+                                WHERE idreceta = $6`,[nombreReceta,descripcionReceta,ingredientes,pasosReceta,imagenes,idReceta])
                         .then(response => {
 
 
