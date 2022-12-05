@@ -106,30 +106,10 @@ const editarPerfil = async (req,res,next) => {
     }
 }
 
-const editarImg = async (req,res,next) => {
-    console.log(req.body);
-
-    // let {idUsuario,nombreUsuario,descripcion,fotoPerfil} = req.body;
-    // if(fotoPerfil == null || fotoPerfil == ''){
-    //     fotoPerfil = 'https://i1.sndcdn.com/avatars-000416471418-8ll5py-t240x240.jpg';
-    // }
-    // try{
-    //     await pool
-    //         .query('UPDATE usuarios set nombrepersona = $1, descripcionusuario = $2, fotoperfil = $3 where idusuario = $4 RETURNING *',[nombreUsuario,descripcion,fotoPerfil,idUsuario])
-    //         .then(response => {
-    //             res.status(200).json(response.rows[0])
-    //         })
-    //         .catch(err => res.status(401).json({Error:err.message}))
-    // }
-    // catch(e){
-    //     next(e);
-    // }
-}
 
 module.exports = {
     getUsersById,
     logearUsuario,
     registrarUsuario,
     editarPerfil,
-    editarImg
 }

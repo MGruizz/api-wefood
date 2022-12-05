@@ -1,7 +1,6 @@
 const pool = require('../../configs/db.config')
 
 const getAllRecipes = async (req,res,next) => {
-    let autores = [];
     try{
         await pool
         .query(`SELECT recetas.idautor,recetas.idreceta,recetas.nombrereceta,recetas.descripcionreceta,recetas.ingredientes,recetas.pasosreceta,recetas.imagenes,usuarios.nombrepersona
@@ -114,13 +113,9 @@ const editarReceta = (req,res) => {
                                 .catch(err => {
                                     console.log(err.message)
                                 })
-
-
-
                             res.status(200).json({Res:'Receta actualizado exitosamente',Receta:response.rows[0]})
                         })
                         .catch(err => res.status(401).json({Error:err.message}))
-                    
                 }
                 else{
                     res.status(401).json({Error: 'La receta buscada no existe'});

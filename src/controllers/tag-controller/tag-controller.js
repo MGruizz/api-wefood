@@ -35,7 +35,7 @@ const agregarTag = async (req,res) => {
             .query('SELECT nombre FROM tags WHERE nombre = $1',[tag])
             .then(response => {
                 if(response.rows.length > 0){
-                res.status(400).json({Error: 'El tag ingresado ya se encuentra ingresado'});
+                    res.status(400).json({Error: 'El tag ingresado ya se encuentra ingresado'});
                 }
                 else{
                     pool
