@@ -136,8 +136,8 @@ const buscarReceta = async (req,res) => {
     const {palabraclave} = req.params;
     try{
         await pool 
-            .query(`SELECT * FROM recetas join tag_receta tr on tr.idreceta = recetas.idreceta join tags on tags.idtag = tr.idtag
-                    where nombrereceta ilike $1 or descripcionreceta ilike $1 or ingredientes ilike $1 or tags.nombre ilike $1`,['%' + palabraclave + '%'])
+            .query(`SELECT recetas.idautor,recetas.idreceta,recetas.nombrereceta,recetas.descripcionreceta,recetas.ingredientes,recetas.pasosreceta,recetas.imagenes,usuarios.nombrepersona FROM recetas join tag_receta tr on tr.idreceta = recetas.idreceta join tags on tags.idtag = tr.idtag 
+                    join usuarios on idautor = idusuario where nombrereceta ilike $1 or descripcionreceta ilike $1 or ingredientes ilike $1 or tags.nombre ilike $1`,['%' + palabraclave + '%'])
             .then(response => {
                 console.log(response)
                 if(response.rows.length > 0){
